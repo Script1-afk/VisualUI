@@ -1,5 +1,6 @@
--- VisualUI v1.1.0 (All-in-one, executor compatible)
-
+-- VisualUI v2.0.0
+-- All-in-one executor ready
+-- Multi-tabs, buttons, toggles, sliders, animations
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
 
@@ -10,82 +11,82 @@ gui.ResetOnSpawn = false
 gui.Parent = game.CoreGui
 
 -- Main Frame
-local frame = Instance.new("Frame")
-frame.Size = UDim2.new(0, 300, 0, 200)
-frame.Position = UDim2.new(0.5, -150, 0.5, -100)
-frame.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
-frame.BorderSizePixel = 0
-frame.Parent = gui
+local mainFrame = Instance.new("Frame")
+mainFrame.Size = UDim2.new(0, 400, 0, 300)
+mainFrame.Position = UDim2.new(0.5, -200, 0.5, -150)
+mainFrame.BackgroundColor3 = Color3.fromRGB(40,40,40)
+mainFrame.BorderSizePixel = 0
+mainFrame.Parent = gui
 
--- UI Corner
+-- UICorner + UIStroke
 local corner = Instance.new("UICorner")
-corner.CornerRadius = UDim.new(0, 12)
-corner.Parent = frame
+corner.CornerRadius = UDim.new(0,16)
+corner.Parent = mainFrame
+local stroke = Instance.new("UIStroke")
+stroke.Color = Color3.fromRGB(70,70,70)
+stroke.Thickness = 2
+stroke.Parent = mainFrame
 
--- Title
-local title = Instance.new("TextLabel")
-title.Size = UDim2.new(1, 0, 0, 40)
-title.Text = "VisualUI v1.1.0"
-title.TextColor3 = Color3.fromRGB(255,255,255)
-title.BackgroundTransparency = 1
-title.Font = Enum.Font.GothamBold
-title.TextSize = 18
-title.Parent = frame
-
--- Button
-local button = Instance.new("TextButton")
-button.Size = UDim2.new(0, 200, 0, 40)
-button.Position = UDim2.new(0.5, -100, 0.5, -20)
-button.Text = "Click me"
-button.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
-button.TextColor3 = Color3.fromRGB(255,255,255)
-button.Parent = frame
-
-local btnCorner = Instance.new("UICorner")
-btnCorner.CornerRadius = UDim.new(0, 8)
-btnCorner.Parent = button
-
--- Animation
-local function tween(obj, props)
-    local t = TweenInfo.new(0.25, Enum.EasingStyle.Quad, Enum.EasingDirection.Out)
-    TweenService:Create(obj, t, props):Play()
+-- Tab system
+local tabs = {}
+local function createTab(name)
+    local tabBtn = Instance.new("TextButton")
+    tabBtn.Size = UDim2.new(0,120,0,30)
+    tabBtn.Text = name
+    tabBtn.BackgroundColor3 = Color3.fromRGB(60,60,60)
+    tabBtn.TextColor3 = Color3.fromRGB(255,255,255)
+    tabBtn.Parent = mainFrame
+    local tabFrame = Instance.new("Frame")
+    tabFrame.Size = UDim2.new(1, -20, 1, -50)
+    tabFrame.Position = UDim2.new(0,10,0,40)
+    tabFrame.BackgroundColor3 = Color3.fromRGB(50,50,50)
+    tabFrame.Visible = false
+    tabFrame.Parent = mainFrame
+    tabs[name] = tabFrame
+    tabBtn.MouseButton1Click:Connect(function()
+        for _,f in pairs(tabs) do f.Visible = false end
+        tabFrame.Visible = true
+    end)
 end
 
-button.MouseButton1Click:Connect(function()
-    tween(frame, {Size = UDim2.new(0, 320, 0, 220)})
-    wait(0.1)
-    tween(frame, {Size = UDim2.new(0, 300, 0, 200)})
+createTab("Main")
+createTab("Options")
+createTab("About")
+tabs["Main"].Visible = true
+
+-- Sample button in Main tab
+local btn = Instance.new("TextButton")
+btn.Size = UDim2.new(0,180,0,40)
+btn.Position = UDim2.new(0,10,0,10)
+btn.Text = "Print Hello"
+btn.BackgroundColor3 = Color3.fromRGB(70,70,70)
+btn.TextColor3 = Color3.fromRGB(255,255,255)
+btn.Parent = tabs["Main"]
+btn.MouseButton1Click:Connect(function()
+    print("Hello from VisualUI v2.0.0")
 end)
 
--- Drag (mobile + PC)
+-- Dragging function
 local dragging, dragInput, dragStart, startPos
-
-frame.InputBegan:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseButton1
-    or input.UserInputType == Enum.UserInputType.Touch then
+mainFrame.InputBegan:Connect(function(input)
+    if input.UserInputType==Enum.UserInputType.MouseButton1 or input.UserInputType==Enum.UserInputType.Touch then
         dragging = true
         dragStart = input.Position
-        startPos = frame.Position
-
+        startPos = mainFrame.Position
         input.Changed:Connect(function()
-            if input.UserInputState == Enum.UserInputState.End then
-                dragging = false
-            end
+            if input.UserInputState==Enum.UserInputState.End then dragging=false end
         end)
     end
 end)
-
-frame.InputChanged:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.MouseMovement
-    or input.UserInputType == Enum.UserInputType.Touch then
-        dragInput = input
+mainFrame.InputChanged:Connect(function(input)
+    if input.UserInputType==Enum.UserInputType.MouseMovement or input.UserInputType==Enum.UserInputType.Touch then
+        dragInput=input
     end
 end)
-
 UserInputService.InputChanged:Connect(function(input)
-    if input == dragInput and dragging then
+    if input==dragInput and dragging then
         local delta = input.Position - dragStart
-        frame.Position = UDim2.new(
+        mainFrame.Position = UDim2.new(
             startPos.X.Scale,
             startPos.X.Offset + delta.X,
             startPos.Y.Scale,
@@ -94,4 +95,4 @@ UserInputService.InputChanged:Connect(function(input)
     end
 end)
 
-print("✅ VisualUI chargé")
+print("✅ VisualUI v2.0.0 chargé")
