@@ -7,9 +7,7 @@ function Window.new(config)
     self.Title = config.Title or "VisualUI"
     self.IsMobile = UserInputService.TouchEnabled and not UserInputService.MouseEnabled
     
-    -- Logique de création de la ScreenGui ici...
-    print("Fenêtre " .. self.Title .. " créée ! Mode Mobile : " .. tostring(self.IsMobile))
-    
+    print("Fenêtre " .. self.Title .. " initialisée. Mode Mobile : " .. tostring(self.IsMobile))
     return self
 end
 
