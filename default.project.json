@@ -1,0 +1,9 @@
+{
+  "name": "VisualUI",
+  "tree": {
+    "$className": "Folder",
+    "VisualUI": {
+      "$path": "src"
+    }
+  }
+}

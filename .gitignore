@@ -1,0 +1,8 @@
+*.rbxl
+*.rbxlx
+*.rbxm
+*.rbxmx
+_Index/
+wally-index/
+node_modules/
+.DS_Store
